@@ -19,13 +19,15 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
+import { LoginUserDetails } from "@/api/api";
+import { useQuery } from "@tanstack/react-query";
 
 // This is sample data.
-const data = {
+const dataSample = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "John Doe",
+    email: "johndoe@example.com",
+    avatar: "/avatars/johndoe.jpg",
   },
   navMain: [
     {
@@ -78,6 +80,14 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: response } = useQuery({
+    queryKey: ["user"],
+    queryFn: LoginUserDetails,
+    staleTime: 5 * 60 * 1000, // Data is considered fresh for 5 minutes
+    gcTime: 10 * 60 * 1000, // Cache data for 10 minutes
+    retry: 2, // Retry the query twice on failure
+  });
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -97,10 +107,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </Link>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={dataSample.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={response?.data.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
