@@ -12,17 +12,20 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Link, Navigate, Outlet } from "react-router-dom";
+import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 
-
 const DashboardLayout = () => {
   const token = useSelector((state: RootState) => state.token.value);
+  const location = useLocation();
 
   if (!token) {
     return <Navigate to={"/auth/login"} />;
   }
+
+  // Generate breadcrumbs based on the current path
+  const pathSegments = location.pathname.split("/").filter(Boolean); // Split path and remove empty strings
 
   return (
     <main>
@@ -35,13 +38,29 @@ const DashboardLayout = () => {
               <Separator orientation="vertical" className="mr-2 h-4" />
               <Breadcrumb>
                 <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <Link to="/dashboard">Dashboard</Link>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>Users</BreadcrumbPage>
-                  </BreadcrumbItem>
+                  {pathSegments.map((segment, index) => {
+                    const isLast = index === pathSegments.length - 1;
+                    const url = `/${pathSegments
+                      .slice(0, index + 1)
+                      .join("/")}`;
+
+                    return (
+                      <>
+                        <BreadcrumbItem>
+                          {isLast ? (
+                            <BreadcrumbPage className="capitalize">
+                              {segment}
+                            </BreadcrumbPage>
+                          ) : (
+                            <Link to={url} className="capitalize">
+                              {segment}
+                            </Link>
+                          )}
+                        </BreadcrumbItem>
+                        {!isLast && <BreadcrumbSeparator />}
+                      </>
+                    );
+                  })}
                 </BreadcrumbList>
               </Breadcrumb>
             </div>

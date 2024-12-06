@@ -21,6 +21,7 @@ import {
 import { Link } from "react-router-dom";
 import { LoginUserDetails } from "@/api/api";
 import { useQuery } from "@tanstack/react-query";
+import NavUserLoading from "./loading/NavUser";
 
 // This is sample data.
 const dataSample = {
@@ -80,12 +81,11 @@ const dataSample = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: response } = useQuery({
+  const { data: response, isPending } = useQuery({
     queryKey: ["user"],
     queryFn: LoginUserDetails,
-    staleTime: 5 * 60 * 1000, // Data is considered fresh for 5 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // Cache data for 10 minutes
-    retry: 2, // Retry the query twice on failure
   });
 
   return (
@@ -101,7 +101,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-semibold">Nighat Cloth Store</span>
-              <span className="truncate text-xs"></span>
             </div>
           </SidebarMenuButton>
         </Link>
@@ -110,7 +109,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={dataSample.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={response?.data.user} />
+        {isPending ? (
+          <NavUserLoading />
+        ) : (
+          <NavUser user={response?.data.user || dataSample.user} />
+        )}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
