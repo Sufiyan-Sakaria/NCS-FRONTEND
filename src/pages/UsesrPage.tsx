@@ -2,7 +2,7 @@ import { Users } from "@/api/api";
 import { User } from "@/Types/UserType";
 import { useQuery } from "@tanstack/react-query";
 
-const UserPage = () => {
+const UsersPage = () => {
   const {
     data: response,
     isLoading,
@@ -47,4 +47,4 @@ const UserPage = () => {
   );
 };
 
-export default UserPage;
+export default UsersPage;

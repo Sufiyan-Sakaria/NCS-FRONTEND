@@ -3,7 +3,7 @@ import AuthLayout from "./layout/AuthLayout";
 import LoginPage from "./pages/LoginPage";
 import DashboardLayout from "./layout/DashboardLayout";
 import HomePage from "./pages/HomePage";
-import UserPage from "./pages/UserPage";
+import UserPage from "./pages/UsesrPage";
 
 const router = createBrowserRouter([
   {
