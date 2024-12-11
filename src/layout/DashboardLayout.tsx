@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/AppSidebar";
+import React from "react";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -45,7 +46,7 @@ const DashboardLayout = () => {
                       .join("/")}`;
 
                     return (
-                      <>
+                      <React.Fragment key={url}>
                         <BreadcrumbItem>
                           {isLast ? (
                             <BreadcrumbPage className="capitalize">
@@ -58,7 +59,7 @@ const DashboardLayout = () => {
                           )}
                         </BreadcrumbItem>
                         {!isLast && <BreadcrumbSeparator />}
-                      </>
+                      </React.Fragment>
                     );
                   })}
                 </BreadcrumbList>

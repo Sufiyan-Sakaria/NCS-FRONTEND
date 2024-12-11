@@ -2,7 +2,8 @@ import { Users } from "@/api/api";
 import DataTable from "@/components/DataTable";
 import { User } from "@/Types/UserType";
 import { useQuery } from "@tanstack/react-query";
-import { createColumnHelper, ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
+import { DateTime } from "luxon";
 
 const UsersPage = () => {
   const {
@@ -20,24 +21,40 @@ const UsersPage = () => {
   // Default data to avoid conditional hook calls
   const usersData = response?.data?.users || [];
 
-  const columnHelper = createColumnHelper<User>();
-
   const columns: ColumnDef<User>[] = [
-    columnHelper.accessor("id", {
+    {
+      accessorKey: "id",
       header: "ID",
-    }),
-    columnHelper.accessor("firstname", {
-      header: "Firstname",
-    }),
-    columnHelper.accessor("lastname", {
-      header: "Lastname",
-    }),
-    columnHelper.accessor("email", {
+    },
+    {
+      accessorFn: (row) => `${row.firstname} ${row.lastname}`,
+      id: "name", // Unique identifier for this column
+      header: "Name",
+    },
+    {
+      accessorKey: "email",
       header: "Email",
-    }),
-    columnHelper.accessor("role", {
+    },
+    {
+      accessorKey: "role",
       header: "Role",
-    }),
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Created At",
+      cell: ({ cell }) => {
+        const value = cell.getValue() as string;
+        return DateTime.fromISO(value).toLocaleString(DateTime.DATETIME_MED);
+      },
+    },
+    {
+      accessorKey: "updatedAt",
+      header: "Updated At",
+      cell: ({ cell }) => {
+        const value = cell.getValue() as string;
+        return DateTime.fromISO(value).toLocaleString(DateTime.DATETIME_MED);
+      },
+    },
   ];
 
   if (isLoading) {
@@ -54,12 +71,9 @@ const UsersPage = () => {
 
   return (
     <main className="m-3">
-      <section className="mb-6">
+      <section>
         <h1 className="text-2xl font-semibold">List of Users</h1>
         <p>Here all the users of Nighat Cloth Store.</p>
-        <p className="text-md">
-          Total Users: <span className="font-medium">{usersData.length}</span>
-        </p>
       </section>
       <section>
         <DataTable<User> data={usersData} columns={columns} />
