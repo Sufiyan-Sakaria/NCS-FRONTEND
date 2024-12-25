@@ -4,6 +4,8 @@ import LoginPage from "./pages/LoginPage";
 import DashboardLayout from "./layout/DashboardLayout";
 import HomePage from "./pages/HomePage";
 import UserPage from "./pages/UsesrPage";
+import AddUserPage from "./pages/AddUserPage";
+import EdituserPage from "./pages/EditUserPage";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +33,14 @@ const router = createBrowserRouter([
       {
         path: "users",
         element: <UserPage />,
+      },
+      {
+        path: "users/add",
+        element: <AddUserPage />,
+      },
+      {
+        path: "users/edit/:id",
+        element: <EdituserPage />,
       },
     ],
   },

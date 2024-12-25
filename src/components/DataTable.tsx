@@ -12,6 +12,8 @@ import {
   useReactTable,
   ColumnDef,
   getPaginationRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
 import { Button } from "./ui/button";
 import {
@@ -20,27 +22,42 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import { Input } from "./ui/input";
+import { Link } from "react-router-dom";
 
 interface DataTableProps<T> {
   data: T[];
   columns: ColumnDef<T>[];
+  title: string;
 }
 
-const DataTable = <T extends object>({ data, columns }: DataTableProps<T>) => {
+const DataTable = <T extends object>({
+  data,
+  columns,
+  title,
+}: DataTableProps<T>) => {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    initialState: {
+      columnVisibility: {
+        id: false,
+        createdAt: false,
+        updatedAt: false,
+      },
+    },
   });
 
   const handleEmailFilterChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const value = event.target.value.toLowerCase();
-    const emailColumn = table.getColumn("email");
+    const value = event.target.value;
+    const emailColumn = table.getColumn("name");
     if (emailColumn) {
       emailColumn.setFilterValue(value);
     }
@@ -48,12 +65,18 @@ const DataTable = <T extends object>({ data, columns }: DataTableProps<T>) => {
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 gap-4">
         <Input
-          placeholder="Search by email..."
+          placeholder="Search by name..."
           onChange={handleEmailFilterChange}
           className="max-w-sm"
         />
+        <Link to={"add"}>
+          <Button>
+            <Plus />
+            Add {title}
+          </Button>
+        </Link>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -116,7 +139,7 @@ const DataTable = <T extends object>({ data, columns }: DataTableProps<T>) => {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-16 text-center"
                 >
                   No results.
                 </TableCell>

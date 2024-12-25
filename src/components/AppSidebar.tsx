@@ -18,17 +18,15 @@ import {
   SidebarMenuButton,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LoginUserDetails } from "@/api/api";
 import { useQuery } from "@tanstack/react-query";
 import NavUserLoading from "./loading/NavUser";
 
-// This is sample data.
 const dataSample = {
   user: {
-    name: "John Doe",
-    email: "johndoe@example.com",
-    avatar: "/avatars/johndoe.jpg",
+    name: "Nighat Cloth",
+    email: "nighatcloth@example.com",
   },
   navMain: [
     {
@@ -81,12 +79,21 @@ const dataSample = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: response, isPending } = useQuery({
+  const navigate = useNavigate();
+  const {
+    data: response,
+    isPending,
+    isError,
+  } = useQuery({
     queryKey: ["user"],
     queryFn: LoginUserDetails,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // Cache data for 10 minutes
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
+
+  if (isError) {
+    navigate("/auth/login");
+  }
 
   return (
     <Sidebar collapsible="icon" {...props}>

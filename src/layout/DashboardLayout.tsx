@@ -45,6 +45,11 @@ const DashboardLayout = () => {
                       .slice(0, index + 1)
                       .join("/")}`;
 
+                    // Skip segment if it's a number (e.g., user ID, product ID)
+                    if (!isNaN(Number(segment))) {
+                      return null;
+                    }
+
                     return (
                       <React.Fragment key={url}>
                         <BreadcrumbItem>
