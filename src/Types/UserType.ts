@@ -3,4 +3,6 @@ export interface User {
   username: string;
   email: string;
   role: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

@@ -157,7 +157,12 @@ const UsersPage = () => {
         <p>Here all the users of Nighat Cloth Store.</p>
       </section>
       <section>
-        <DataTable<User> data={usersData} columns={columns} title="User" />
+        <DataTable<User>
+          data={usersData}
+          columns={columns}
+          title="User"
+          search="name"
+        />
       </section>
     </main>
   );

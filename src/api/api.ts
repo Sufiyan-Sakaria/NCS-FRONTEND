@@ -93,3 +93,46 @@ export const UpdateUser = async (data: {
     throw error;
   }
 };
+
+export const GetAllBrands = async () => {
+  try {
+    const response = await api.get("/brands/all");
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const GetSingleBrand = async (data: { id: number }) => {
+  try {
+    const response = await api.get(`/brands/${data.id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const AddBrand = async (data: {
+  name: string;
+  description?: string;
+}) => {
+  try {
+    const response = await api.post(`/brands/add`, data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const UpdateBrand = async (data: {
+  id: number;
+  name: string;
+  description: string;
+}) => {
+  try {
+    const response = await api.patch(`/brands/update/${data.id}`, data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

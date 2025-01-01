@@ -27,9 +27,10 @@ const LoginPage = () => {
   const navigate = useNavigate(); // Initialize the navigate hook
 
   const mutation = useMutation({
+    mutationKey: ["login"],
     mutationFn: Login,
     onSuccess: (response) => {
-      const { token } = response.data;
+      const { token } = response;
       dispatch(setToken(token));
 
       // Clear form fields after success

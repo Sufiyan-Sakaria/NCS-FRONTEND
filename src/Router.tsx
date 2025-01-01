@@ -6,6 +6,9 @@ import HomePage from "./pages/HomePage";
 import UserPage from "./pages/UsesrPage";
 import AddUserPage from "./pages/AddUserPage";
 import EdituserPage from "./pages/EditUserPage";
+import BrandsPage from "./pages/BrandsPage";
+import AddBrandPage from "./pages/AddBrandPage";
+import EditBrandPage from "./pages/EditBrandPage";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +44,18 @@ const router = createBrowserRouter([
       {
         path: "users/edit/:id",
         element: <EdituserPage />,
+      },
+      {
+        path: "brands",
+        element: <BrandsPage />,
+      },
+      {
+        path: "brands/add",
+        element: <AddBrandPage />,
+      },
+      {
+        path: "brands/edit/:id",
+        element: <EditBrandPage />,
       },
     ],
   },

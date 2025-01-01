@@ -30,13 +30,18 @@ interface DataTableProps<T> {
   data: T[];
   columns: ColumnDef<T>[];
   title: string;
+  search: string;
+  columnVisibility: {};
 }
 
 const DataTable = <T extends object>({
   data,
   columns,
   title,
+  search,
+  columnVisibility,
 }: DataTableProps<T>) => {
+  // Initialize table with dynamic column visibility based on disabledColumn prop
   const table = useReactTable({
     data,
     columns,
@@ -44,22 +49,20 @@ const DataTable = <T extends object>({
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    columnResizeMode: "onChange",
+    columnResizeDirection: "rtl",
     initialState: {
-      columnVisibility: {
-        id: false,
-        createdAt: false,
-        updatedAt: false,
-      },
+      columnVisibility: columnVisibility,
     },
   });
 
-  const handleEmailFilterChange = (
+  const handleSearchFilterChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = event.target.value;
-    const emailColumn = table.getColumn("name");
-    if (emailColumn) {
-      emailColumn.setFilterValue(value);
+    const searchColumn = table.getColumn(search);
+    if (searchColumn) {
+      searchColumn.setFilterValue(value);
     }
   };
 
@@ -68,7 +71,7 @@ const DataTable = <T extends object>({
       <div className="flex items-center py-4 gap-4">
         <Input
           placeholder="Search by name..."
-          onChange={handleEmailFilterChange}
+          onChange={handleSearchFilterChange}
           className="max-w-sm"
         />
         <Link to={"add"}>
@@ -106,7 +109,11 @@ const DataTable = <T extends object>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    style={{ width: header.getSize() }} // Apply the column width dynamically
+                    className={"max-w-[" + header.getSize() + "px]"} // Optional: add this if you want to apply a class
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
