@@ -9,6 +9,7 @@ import EdituserPage from "./pages/EditUserPage";
 import BrandsPage from "./pages/BrandsPage";
 import AddBrandPage from "./pages/AddBrandPage";
 import EditBrandPage from "./pages/EditBrandPage";
+import CategoryPage from "./pages/CategoryPage";
 
 const router = createBrowserRouter([
   {
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: "brands/edit/:id",
         element: <EditBrandPage />,
+      },
+      {
+        path: "category",
+        element: <CategoryPage />,
       },
     ],
   },

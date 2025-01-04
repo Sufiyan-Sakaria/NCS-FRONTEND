@@ -1,12 +1,5 @@
 import * as React from "react";
-import {
-  Building2,
-  Edit,
-  Plus,
-  ShoppingBag,
-  Trash2,
-  Users,
-} from "lucide-react";
+import { Building2, Layers, Plus, ShoppingBag, Users } from "lucide-react";
 
 import { NavMain } from "@/components/NavMain";
 import { NavUser } from "@/components/NavUser";
@@ -40,16 +33,6 @@ const dataSample = {
           url: "/dashboard/users/add",
           icon: Plus,
         },
-        {
-          title: "Edit",
-          url: "/dashboard/users/edit",
-          icon: Edit,
-        },
-        {
-          title: "Delete",
-          url: "/dashboard/users/delete",
-          icon: Trash2,
-        },
       ],
     },
     {
@@ -63,15 +46,18 @@ const dataSample = {
           url: "/dashboard/brands/add",
           icon: Plus,
         },
+      ],
+    },
+    {
+      title: "Category",
+      url: "/dashboard/category",
+      icon: Layers,
+      isActive: false,
+      items: [
         {
-          title: "Edit",
-          url: "/dashboard/brands/edit",
-          icon: Edit,
-        },
-        {
-          title: "Delete",
-          url: "/dashboard/brands/delete",
-          icon: Trash2,
+          title: "Add",
+          url: "/dashboard/category/add",
+          icon: Plus,
         },
       ],
     },
