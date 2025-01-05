@@ -49,8 +49,8 @@ const dataSample = {
       ],
     },
     {
-      title: "Category",
-      url: "/dashboard/category",
+      title: "Categories",
+      url: "/dashboard/categories",
       icon: Layers,
       isActive: false,
       items: [

@@ -1,9 +1,8 @@
-import { GetAllBrands } from "@/api/api";
+import { GetAllCategories } from "@/api/api";
 import DataTable from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import TableActions from "@/components/UserTableActions";
-import { Brand } from "@/Types/BrandType";
 import { Category } from "@/Types/CategoryType";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
@@ -16,14 +15,14 @@ const CategoryPage = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["brands"],
-    queryFn: GetAllBrands,
+    queryKey: ["categories"],
+    queryFn: GetAllCategories,
     staleTime: 3 * 60 * 1000,
     gcTime: 5 * 60 * 1000,
   });
 
   // Default data to avoid conditional hook calls
-  const brands = response?.data?.brands || [];
+  const categories = response?.data?.categories || [];
 
   const columns: ColumnDef<Category>[] = [
     {
@@ -163,12 +162,12 @@ const CategoryPage = () => {
   return (
     <main className="m-3">
       <section>
-        <h1 className="text-2xl font-semibold">List of Brands</h1>
-        <p>Here are all the brands from Nighat Cloth Store.</p>
+        <h1 className="text-2xl font-semibold">List of Categories</h1>
+        <p>Here are all the category from Nighat Cloth Store.</p>
       </section>
       <section>
         <DataTable<Category>
-          data={brands}
+          data={categories}
           columns={columns}
           title="Category"
           search="name"

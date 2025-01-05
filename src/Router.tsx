@@ -10,6 +10,8 @@ import BrandsPage from "./pages/BrandsPage";
 import AddBrandPage from "./pages/AddBrandPage";
 import EditBrandPage from "./pages/EditBrandPage";
 import CategoryPage from "./pages/CategoryPage";
+import EditCategoryPage from "./pages/EditCategoryPage";
+import AddCategoryPage from "./pages/AddCategoryPage";
 
 const router = createBrowserRouter([
   {
@@ -59,8 +61,16 @@ const router = createBrowserRouter([
         element: <EditBrandPage />,
       },
       {
-        path: "category",
+        path: "categories",
         element: <CategoryPage />,
+      },
+      {
+        path: "categories/add",
+        element: <AddCategoryPage />,
+      },
+      {
+        path: "Categories/edit/:id",
+        element: <EditCategoryPage />,
       },
     ],
   },

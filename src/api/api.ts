@@ -136,3 +136,46 @@ export const UpdateBrand = async (data: {
     throw error;
   }
 };
+
+export const GetAllCategories = async () => {
+  try {
+    const response = await api.get("/categories/all");
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const GetSingleCategory = async (data: { id: number }) => {
+  try {
+    const response = await api.get(`/categories/${data.id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const AddCategory = async (data: {
+  name: string;
+  description?: string;
+}) => {
+  try {
+    const response = await api.post(`/categories/add`, data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const UpdateCategory = async (data: {
+  id: number;
+  name: string;
+  description: string;
+}) => {
+  try {
+    const response = await api.patch(`/categories/update/${data.id}`, data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
