@@ -12,6 +12,7 @@ import EditBrandPage from "./pages/EditBrandPage";
 import CategoryPage from "./pages/CategoryPage";
 import EditCategoryPage from "./pages/EditCategoryPage";
 import AddCategoryPage from "./pages/AddCategoryPage";
+import AccountsPage from "./pages/AccountsPage";
 
 const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: "Categories/edit/:id",
         element: <EditCategoryPage />,
+      },
+      {
+        path: "Accounts",
+        element: <AccountsPage />,
       },
     ],
   },

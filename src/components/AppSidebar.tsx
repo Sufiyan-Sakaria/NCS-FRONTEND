@@ -1,5 +1,12 @@
 import * as React from "react";
-import { Building2, Layers, Plus, ShoppingBag, Users } from "lucide-react";
+import {
+  Building2,
+  Layers,
+  Plus,
+  ShoppingBag,
+  Users,
+  UsersRound,
+} from "lucide-react";
 
 import { NavMain } from "@/components/NavMain";
 import { NavUser } from "@/components/NavUser";
@@ -60,6 +67,12 @@ const dataSample = {
           icon: Plus,
         },
       ],
+    },
+    {
+      title: "Accounts",
+      url: "/dashboard/accounts",
+      icon: UsersRound,
+      isActive: false,
     },
   ],
 };
