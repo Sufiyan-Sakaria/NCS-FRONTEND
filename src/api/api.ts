@@ -179,3 +179,12 @@ export const UpdateCategory = async (data: {
     throw error;
   }
 };
+
+export const GetAllAccounts = async () => {
+  try {
+    const response = await api.get("/account/groups");
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
