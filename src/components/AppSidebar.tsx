@@ -4,6 +4,7 @@ import {
   Layers,
   Plus,
   ShoppingBag,
+  TicketPercent,
   Users,
   UsersRound,
 } from "lucide-react";
@@ -72,6 +73,12 @@ const dataSample = {
       title: "Accounts",
       url: "/dashboard/accounts",
       icon: UsersRound,
+      isActive: false,
+    },
+    {
+      title: "Vouchers",
+      url: "/dashboard/vouchers",
+      icon: TicketPercent,
       isActive: false,
     },
   ],

@@ -13,6 +13,8 @@ import CategoryPage from "./pages/CategoryPage";
 import EditCategoryPage from "./pages/EditCategoryPage";
 import AddCategoryPage from "./pages/AddCategoryPage";
 import AccountsPage from "./pages/AccountsPage";
+import VoucherPage from "./pages/VoucherPage";
+import RecieptVoucherPage from "./pages/RecieptVoucherPage";
 
 const router = createBrowserRouter([
   {
@@ -76,6 +78,14 @@ const router = createBrowserRouter([
       {
         path: "Accounts",
         element: <AccountsPage />,
+      },
+      {
+        path: "Vouchers",
+        element: <VoucherPage />,
+      },
+      {
+        path: "Vouchers/receipt",
+        element: <RecieptVoucherPage />,
       },
     ],
   },
