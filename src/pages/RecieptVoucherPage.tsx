@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Card,
   CardHeader,
@@ -23,15 +25,57 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
 import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { GetVoucherNo, GetAccountByType } from "@/api/api";
 
 const ReceiptVoucherPage = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const [paymentMode, setPaymentMode] = useState("");
+  const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
+  const [accountCode, setAccountCode] = useState("");
+
+  // Fetch voucher number
+  const {
+    data: voucherNo,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["voucherNo", "Cash"],
+    queryFn: () => GetVoucherNo("RECEIPT"),
+  });
+
+  // Fetch accounts list from backend
+  const {
+    data: accounts,
+    isLoading: isAccountsLoading,
+    isError: isAccountsError,
+  } = useQuery({
+    queryKey: ["accounts"],
+    queryFn: () => GetAccountByType("CASH"),
+    onSuccess: (data) => {
+      if (data?.Accounts?.length > 0) {
+        setSelectedAccount(data.Accounts[0].id);
+        setAccountCode(data.Accounts[0].code);
+      }
+    },
+  });
+
+  // Handle account selection and set corresponding code
+  const handleAccountSelect = (accountId: string) => {
+    const selected = accounts?.Accounts?.find(
+      (acc: any) => acc.id === accountId
+    );
+    if (selected) {
+      setSelectedAccount(accountId); // Store the ID instead of name
+      setAccountCode(selected.code);
+    }
+  };
 
   return (
-    <div className="flex justify-center items-center min-h-screen p-4">
-      <Card className="w-full max-w-2xl">
+    <main className="flex justify-center items-center min-h-screen p-4">
+      <Card className="w-full max-w-xl">
         <CardHeader>
           <CardTitle>Cash Receipt Voucher</CardTitle>
           <CardDescription>
@@ -39,18 +83,35 @@ const ReceiptVoucherPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Date and Account */}
-          <div className="space-y-2 flex gap-4 items-center justify-center">
-            <div className="space-y-2">
+          {/* Voucher Number & Date */}
+          <div className="flex gap-4 justify-between">
+            <div className="space-y-2 flex-1 w-1/2">
+              <Label htmlFor="voucherno">Voucher No.</Label>
+              <Input
+                id="voucherno"
+                type="text"
+                value={
+                  isLoading
+                    ? "Loading..."
+                    : isError
+                    ? "Error!"
+                    : voucherNo?.voucherNo || ""
+                }
+              />
+            </div>
+            <div className="space-y-2 flex justify-end flex-col w-1/2">
               <Label htmlFor="date">Date</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
-                    variant={"outline"}
-                    className="w-[240px] justify-start text-left font-normal"
+                    variant="outline"
+                    className={cn(
+                      "justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                    )}
                   >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    <span>Pick a date</span>
+                    <CalendarIcon className="mr-2" />
+                    {date ? format(date, "PPP") : "Pick a date"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -58,35 +119,56 @@ const ReceiptVoucherPage = () => {
                     mode="single"
                     selected={date}
                     onSelect={setDate}
+                    disabled={(date) =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
                     initialFocus
                   />
                 </PopoverContent>
               </Popover>
             </div>
-            <div className="space-y-2">
-              <Label>Account</Label>
-              <Input id="account" type="text" placeholder="Enter account" />
+          </div>
+
+          {/* Account Section - Code & Selectable Name */}
+          <div className="flex gap-4">
+            <div className="space-y-2 w-1/4">
+              <Label htmlFor="accountCode">Account Code</Label>
+              <Input
+                id="accountCode"
+                type="text"
+                value={accountCode}
+                placeholder="Code"
+                disabled
+              />
             </div>
-          </div>
-
-          {/* Receipt Number */}
-          <div className="space-y-2">
-            <Label htmlFor="receiptNumber">Receipt Number</Label>
-            <Input
-              id="receiptNumber"
-              type="text"
-              placeholder="Enter receipt number"
-            />
-          </div>
-
-          {/* Payer Name */}
-          <div className="space-y-2">
-            <Label htmlFor="payerName">Payer Name</Label>
-            <Input
-              id="payerName"
-              type="text"
-              placeholder="Enter payer's name"
-            />
+            <div className="space-y-2 w-3/4">
+              <Label htmlFor="accountName">Account Name</Label>
+              <Select
+                value={selectedAccount}
+                onValueChange={handleAccountSelect}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select an account" />
+                </SelectTrigger>
+                <SelectContent>
+                  {isAccountsLoading ? (
+                    <SelectItem value="loading" disabled>
+                      Loading...
+                    </SelectItem>
+                  ) : isAccountsError ? (
+                    <SelectItem value="error" disabled>
+                      Error fetching accounts
+                    </SelectItem>
+                  ) : (
+                    accounts?.Accounts?.map((account: any) => (
+                      <SelectItem key={account.id} value={account.id}>
+                        {account.name}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Amount */}
@@ -98,7 +180,7 @@ const ReceiptVoucherPage = () => {
           {/* Payment Mode */}
           <div className="space-y-2">
             <Label htmlFor="paymentMode">Payment Mode</Label>
-            <Select>
+            <Select value={paymentMode} onValueChange={setPaymentMode}>
               <SelectTrigger>
                 <SelectValue placeholder="Select payment mode" />
               </SelectTrigger>
@@ -124,7 +206,7 @@ const ReceiptVoucherPage = () => {
           <Button>Submit</Button>
         </CardFooter>
       </Card>
-    </div>
+    </main>
   );
 };
 

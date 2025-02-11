@@ -188,3 +188,27 @@ export const GetAllAccounts = async () => {
     throw error;
   }
 };
+
+export const GetVoucherNo = async (voucherType: string) => {
+  try {
+    const response = await api.get(
+      `/voucher/voucher-no?voucherType=${voucherType}`
+    );
+    return response.data; // Return only the relevant data
+  } catch (error) {
+    console.error("Error fetching voucher number:", error);
+    throw error;
+  }
+};
+
+export const GetAccountByType = async (accountType: string) => {
+  try {
+    const response = await api.get(
+      `/account/accounts/type?accountType=${accountType}`
+    );
+    return response.data; // Return only the relevant data
+  } catch (error) {
+    console.error("Error fetching accounts by type:", error);
+    throw error;
+  }
+};
