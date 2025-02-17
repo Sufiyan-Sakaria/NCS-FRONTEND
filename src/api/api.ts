@@ -134,6 +134,11 @@ export const UpdateCategory = async (data: {
        Accounts & Ledger
 ========================= */
 
+export const GetAllAccountsHierarchically = async () => {
+  const response = await api.get("/account/groups");
+  return response.data;
+};
+
 export const GetAllAccounts = async () => {
   const response = await api.get("/account/accounts");
   return response.data;

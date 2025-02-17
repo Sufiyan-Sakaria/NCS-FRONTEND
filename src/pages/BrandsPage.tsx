@@ -22,7 +22,7 @@ const BrandsPage = () => {
   });
 
   // Default data to avoid conditional hook calls
-  const brands = response?.data?.brands || [];
+  const brands = response?.brands || [];
 
   const columns: ColumnDef<Brand>[] = [
     {

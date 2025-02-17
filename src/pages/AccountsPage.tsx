@@ -1,4 +1,4 @@
-import { GetAllAccounts } from "@/api/api";
+import { GetAllAccountsHierarchically } from "@/api/api";
 import { useQuery } from "@tanstack/react-query";
 import { TreeView, TreeDataItem } from "@/components/tree-view";
 import { useState } from "react";
@@ -23,7 +23,7 @@ const AccountsPage = () => {
     error: errorAccounts,
   } = useQuery({
     queryKey: ["Accounts"],
-    queryFn: GetAllAccounts,
+    queryFn: GetAllAccountsHierarchically,
     refetchInterval: 60 * 1000,
     staleTime: 60 * 1000,
   });
@@ -36,7 +36,7 @@ const AccountsPage = () => {
   if (errorAccounts)
     return <p>Error loading accounts: {errorAccounts.message}</p>;
 
-  const accounts: Account[] = accountResponse?.data.data ?? [];
+  const accounts: Account[] = accountResponse?.data ?? [];
 
   return (
     <main className="flex h-screen">

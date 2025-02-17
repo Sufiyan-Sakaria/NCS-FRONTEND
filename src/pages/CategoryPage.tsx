@@ -22,7 +22,7 @@ const CategoryPage = () => {
   });
 
   // Default data to avoid conditional hook calls
-  const categories = response?.data?.categories || [];
+  const categories = response?.categories || [];
 
   const columns: ColumnDef<Category>[] = [
     {

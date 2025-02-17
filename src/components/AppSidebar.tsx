@@ -125,7 +125,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {isPending ? (
           <NavUserLoading />
         ) : (
-          <NavUser user={response?.data.user || dataSample.user} />
+          <NavUser user={response?.user || dataSample.user} />
         )}
       </SidebarFooter>
       <SidebarRail />

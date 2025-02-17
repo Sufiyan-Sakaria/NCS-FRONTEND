@@ -23,7 +23,7 @@ const UsersPage = () => {
   });
 
   // Default data to avoid conditional hook calls
-  const usersData = response?.data?.users || [];
+  const usersData = response?.users || [];
 
   const columns: ColumnDef<User>[] = [
     {
@@ -47,10 +47,12 @@ const UsersPage = () => {
       ),
       enableHiding: false,
       enableSorting: false,
+      size: 30,
     },
     {
       accessorKey: "id",
       header: "ID",
+      size: 30,
     },
     {
       accessorKey: "username",
@@ -162,6 +164,7 @@ const UsersPage = () => {
           columns={columns}
           title="User"
           search="name"
+          columnVisibility={{ updatedAt: false }}
         />
       </section>
     </main>
