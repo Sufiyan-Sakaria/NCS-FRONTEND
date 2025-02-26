@@ -36,8 +36,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
+import { useQueryClient } from "@tanstack/react-query";
 
-const ReceiptVoucherPage = () => {
+const PaymentVoucherPage = () => {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [voucherAccountId, setVoucherAccountId] = useState<string>("");
@@ -58,11 +59,15 @@ const ReceiptVoucherPage = () => {
     amount: "",
     description: "",
   });
+  const [currentBalance, setCurrentBalance] = useState<number>(0);
+  const [mainAccountBalance, setMainAccountBalance] = useState<number>(0);
 
   const voucherSelectTriggerRef = useRef<HTMLButtonElement>(null);
   const mainSelectTriggerRef = useRef<HTMLButtonElement>(null);
   const voucherCodeInputRef = useRef<HTMLInputElement>(null);
   const mainCodeInputRef = useRef<HTMLInputElement>(null);
+
+  const queryClient = useQueryClient();
 
   // Fetch voucher number
   const {
@@ -71,7 +76,7 @@ const ReceiptVoucherPage = () => {
     isError: isVoucherError,
   } = useQuery({
     queryKey: ["voucherNo", "Cash"],
-    queryFn: () => GetVoucherNo("RECEIPT"),
+    queryFn: () => GetVoucherNo("PAYMENT"),
   });
 
   // Fetch accounts list
@@ -95,6 +100,7 @@ const ReceiptVoucherPage = () => {
     if (isSuccess && cashAndBankAccounts?.length > 0) {
       setVoucherAccountId(cashAndBankAccounts[0].id);
       setVoucherAccountCode(cashAndBankAccounts[0].code);
+      setCurrentBalance(cashAndBankAccounts[0].currentBalance || 0);
     }
   }, [isSuccess, accounts]);
 
@@ -163,6 +169,7 @@ const ReceiptVoucherPage = () => {
         accountId: selectedAccount.id,
         accountCode: selectedAccount.code,
       }));
+      setMainAccountBalance(selectedAccount.currentBalance || 0);
     }
   };
 
@@ -173,27 +180,27 @@ const ReceiptVoucherPage = () => {
 
     const amount = parseFloat(currentEntry.amount);
 
-    // Add CREDIT entry for the main account (RECEIPT)
-    const creditEntry = {
+    // Add DEBIT entry for the main account (PAYMENT)
+    const debitEntry = {
       accountId: currentEntry.accountId,
       accountCode: currentEntry.accountCode,
-      amount: amount,
-      description: currentEntry.description,
-      transactionType: "CREDIT",
-      voucherAccountId: voucherAccountId,
-    };
-
-    // Add DEBIT entry for the voucher account (Cash/Bank)
-    const debitEntry = {
-      accountId: voucherAccountId,
-      accountCode: voucherAccountCode,
       amount: amount,
       description: currentEntry.description,
       transactionType: "DEBIT",
       voucherAccountId: voucherAccountId,
     };
 
-    setEntries([...entries, creditEntry, debitEntry]);
+    // Add CREDIT entry for the voucher account (Cash/Bank)
+    const creditEntry = {
+      accountId: voucherAccountId,
+      accountCode: voucherAccountCode,
+      amount: amount,
+      description: currentEntry.description,
+      transactionType: "CREDIT",
+      voucherAccountId: voucherAccountId,
+    };
+
+    setEntries([...entries, debitEntry, creditEntry]);
     setCurrentEntry({
       accountId: "",
       accountCode: "",
@@ -214,6 +221,9 @@ const ReceiptVoucherPage = () => {
         amount: "",
         description: "",
       });
+
+      // Invalidate and refetch the accounts query
+      queryClient.invalidateQueries({ queryKey: ["accounts"] });
     },
     onError: (error) => {
       alert(`Error creating voucher: ${error.message || "Unknown error"}`);
@@ -235,10 +245,10 @@ const ReceiptVoucherPage = () => {
     }));
 
     const voucherData = {
-      voucherType: "RECEIPT",
-      description: "Receipt Voucher",
+      voucherType: "PAYMENT",
+      description: "Payment Voucher",
       totalAmount: entries
-        .filter((entry) => entry.transactionType === "CREDIT")
+        .filter((entry) => entry.transactionType === "DEBIT")
         .reduce((sum, entry) => sum + entry.amount, 0),
       voucherAccId: voucherAccountId,
       ledgerEntries,
@@ -250,7 +260,7 @@ const ReceiptVoucherPage = () => {
 
   // Filter entries to show only CREDIT entries (main account)
   const mainAccountEntries = entries.filter(
-    (entry) => entry.transactionType === "CREDIT"
+    (entry) => entry.transactionType === "DEBIT"
   );
 
   // Handle Edit Entry
@@ -275,28 +285,28 @@ const ReceiptVoucherPage = () => {
     if (editIndex === null) return;
 
     const amount = parseFloat(currentEntry.amount);
-    const updatedCreditEntry = {
+    const updatedDebitEntry = {
       accountId: currentEntry.accountId,
       accountCode: currentEntry.accountCode,
-      amount: amount,
-      description: currentEntry.description,
-      transactionType: "CREDIT",
-      voucherAccountId: voucherAccountId,
-    };
-
-    const updatedDebitEntry = {
-      accountId: voucherAccountId,
-      accountCode: voucherAccountCode,
       amount: amount,
       description: currentEntry.description,
       transactionType: "DEBIT",
       voucherAccountId: voucherAccountId,
     };
 
+    const updatedCreditEntry = {
+      accountId: voucherAccountId,
+      accountCode: voucherAccountCode,
+      amount: amount,
+      description: currentEntry.description,
+      transactionType: "CREDIT",
+      voucherAccountId: voucherAccountId,
+    };
+
     setEntries((prev) => {
       const newEntries = [...prev];
-      newEntries[editIndex] = updatedCreditEntry;
       newEntries[editIndex + 1] = updatedDebitEntry;
+      newEntries[editIndex] = updatedCreditEntry;
       return newEntries;
     });
 
@@ -313,15 +323,15 @@ const ReceiptVoucherPage = () => {
     <main className="flex justify-center min-h-screen p-2">
       <Card className="w-full mx-8">
         <CardHeader>
-          <CardTitle>Cash Receipt Voucher</CardTitle>
+          <CardTitle>Cash Payment Voucher</CardTitle>
           <CardDescription>
-            Enter the details for the cash receipt.
+            Enter the details for the cash payment.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {/* Voucher Number & Date */}
           <main className="flex gap-6 justify-between">
-            <div className="w-[43%]">
+            <div className="w-[43%] space-y-2">
               <div className="flex flex-col gap-2 justify-between">
                 <div className="flex gap-2">
                   <div className="space-y-2 flex justify-end flex-col w-1/4">
@@ -372,8 +382,17 @@ const ReceiptVoucherPage = () => {
               </div>
               {/* Voucher Account Section */}
               <div className="space-y-2">
-                <Label>Voucher Account (Cash/Bank)</Label>
-                <div className="flex gap-2">
+                <div className="flex items-center gap-10">
+                  <Label>Voucher Account (Cash/Bank)</Label>
+                  {/* Display Current Balance with Dr./Cr. */}
+                  {currentBalance !== undefined && (
+                    <Label>
+                      {Math.abs(currentBalance).toLocaleString()}{" "}
+                      {currentBalance >= 0 ? "Dr." : "Cr."}
+                    </Label>
+                  )}
+                </div>
+                <div className="flex gap-2 items-center">
                   <div className="w-1/3">
                     <Input
                       ref={voucherCodeInputRef}
@@ -394,6 +413,7 @@ const ReceiptVoucherPage = () => {
                       );
                       if (selectedAccount) {
                         setVoucherAccountCode(selectedAccount.code);
+                        setCurrentBalance(selectedAccount.currentBalance);
                       }
                     }}
                     disabled={isAccountsLoading || isAccountsError}
@@ -423,7 +443,16 @@ const ReceiptVoucherPage = () => {
               </div>
               {/* Main Account Section */}
               <div className="space-y-2">
-                <Label>Main Account</Label>
+                <div className="flex items-center gap-36">
+                  <Label>Main Account</Label>
+                  {/* Show Balance only if an account is selected */}
+                  {currentEntry.accountId && mainAccountBalance !== null && (
+                    <Label>
+                      {Math.abs(mainAccountBalance).toLocaleString()}{" "}
+                      {mainAccountBalance >= 0 ? "Dr." : "Cr."}
+                    </Label>
+                  )}
+                </div>
                 <div className="flex gap-2">
                   <div className="w-1/3">
                     <Input
@@ -466,7 +495,7 @@ const ReceiptVoucherPage = () => {
               </div>
               {/* Amount */}
               <div className="space-y-2">
-                <Label htmlFor="amount">Credit Amount</Label>
+                <Label htmlFor="amount">Debit Amount</Label>
                 <Input
                   id="amount"
                   type="text"
@@ -591,4 +620,4 @@ const ReceiptVoucherPage = () => {
   );
 };
 
-export default ReceiptVoucherPage;
+export default PaymentVoucherPage;

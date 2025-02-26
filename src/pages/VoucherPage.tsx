@@ -11,6 +11,12 @@ const VoucherPage = () => {
           Cash Receipt Vocher
         </Button>
       </Link>
+      <Link to="payment">
+        <Button>
+          <Plus />
+          Cash Payment Vocher
+        </Button>
+      </Link>
     </main>
   );
 };

@@ -15,6 +15,7 @@ import AddCategoryPage from "./pages/AddCategoryPage";
 import AccountsPage from "./pages/AccountsPage";
 import VoucherPage from "./pages/VoucherPage";
 import RecieptVoucherPage from "./pages/RecieptVoucherPage";
+import PaymentVoucherPage from "./pages/PaymentVoucherPage";
 
 const router = createBrowserRouter([
   {
@@ -80,12 +81,16 @@ const router = createBrowserRouter([
         element: <AccountsPage />,
       },
       {
-        path: "Vouchers",
+        path: "vouchers",
         element: <VoucherPage />,
       },
       {
-        path: "Vouchers/receipt",
+        path: "vouchers/receipt",
         element: <RecieptVoucherPage />,
+      },
+      {
+        path: "vouchers/payment",
+        element: <PaymentVoucherPage />,
       },
     ],
   },
