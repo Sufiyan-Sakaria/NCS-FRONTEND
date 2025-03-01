@@ -150,6 +150,11 @@ export const GetAccountByType = async (accountType: string) => {
   return response.data;
 };
 
+export const GetAccountById = async (id: string) => {
+  const response = await api.get(`/account/${id}`);
+  return response.data;
+};
+
 /* =========================
           Vouchers
 ========================= */
@@ -171,12 +176,13 @@ export const CreateVoucher = async (data: {
     description?: string;
   }>;
 }) => {
+  // Corrected endpoint from "/categories/add" to "/voucher/add"
   const response = await api.post("/voucher/add", data);
   return response.data;
 };
 
 /* =========================
-          Ledgers
+           Ledger
 ========================= */
 
 export const GetLedgerEntriesByAccountAndDateRange = async (
@@ -184,8 +190,13 @@ export const GetLedgerEntriesByAccountAndDateRange = async (
   startDate: string,
   endDate: string
 ) => {
-  const response = await api.get(`/ledger/date/${accountId}`, {
-    params: { startDate, endDate },
+  if (!accountId || !startDate || !endDate) {
+    throw new Error("accountId, startDate, and endDate are required");
+  }
+
+  const response = await api.get("/ledger/account-entries", {
+    params: { accountId, startDate, endDate },
   });
+
   return response.data;
 };

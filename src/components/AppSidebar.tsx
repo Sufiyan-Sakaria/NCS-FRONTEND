@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  BookOpenText,
   Building2,
   Layers,
   Plus,
@@ -77,8 +78,14 @@ const dataSample = {
     },
     {
       title: "Vouchers",
-      url: "/dashboard/vouchers",
+      url: "/dashboard/voucher",
       icon: TicketPercent,
+      isActive: false,
+    },
+    {
+      title: "Ledger",
+      url: "/dashboard/ledger",
+      icon: BookOpenText,
       isActive: false,
     },
   ],

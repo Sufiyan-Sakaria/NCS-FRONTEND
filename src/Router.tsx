@@ -16,6 +16,9 @@ import AccountsPage from "./pages/AccountsPage";
 import VoucherPage from "./pages/VoucherPage";
 import RecieptVoucherPage from "./pages/RecieptVoucherPage";
 import PaymentVoucherPage from "./pages/PaymentVoucherPage";
+import AccountLedgerPage from "./pages/AccountLedgerPage";
+import LedgerPage from "./pages/LedgerPage";
+import AccountLedgerViewPage from "./pages/AccountLedgerViewPage";
 
 const router = createBrowserRouter([
   {
@@ -81,16 +84,28 @@ const router = createBrowserRouter([
         element: <AccountsPage />,
       },
       {
-        path: "vouchers",
+        path: "voucher",
         element: <VoucherPage />,
       },
       {
-        path: "vouchers/receipt",
+        path: "voucher/receipt",
         element: <RecieptVoucherPage />,
       },
       {
-        path: "vouchers/payment",
+        path: "voucher/payment",
         element: <PaymentVoucherPage />,
+      },
+      {
+        path: "ledger",
+        element: <LedgerPage />,
+      },
+      {
+        path: "ledger/account",
+        element: <AccountLedgerPage />,
+      },
+      {
+        path: "ledger/account/:id",
+        element: <AccountLedgerViewPage />,
       },
     ],
   },
